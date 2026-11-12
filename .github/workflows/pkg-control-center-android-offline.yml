@@ -1,0 +1,30 @@
+name: Build PKG Control Center Android Offline
+on:
+  push:
+    branches: [pkg-control-center-android-offline-v1]
+    paths:
+      - 'pkg-control-android/**'
+      - '.github/workflows/pkg-control-center-android-offline.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+      - name: Compile Android debug APK
+        working-directory: pkg-control-android
+        run: gradle --no-daemon :app:assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PKG-Control-Center-Android-Offline-APK
+          path: pkg-control-android/app/build/outputs/apk/debug/*.apk
+          retention-days: 30
