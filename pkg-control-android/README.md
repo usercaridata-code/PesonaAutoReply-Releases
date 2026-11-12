@@ -1,17 +1,15 @@
-# PKG Control Center Android — Offline V1
+# PKG Control Center Android 1.1 — Google Sheets langsung
 
-Versi APK offline, khusus Android, tanpa Railway, server Node.js, login atau izin internet.
+APK Android mengambil data dari Apps Script dashboard terpisah dengan koneksi HTTPS, token unik di Android Keystore, tanpa Node.js atau Railway.
 
-**Fitur aktif:** impor CSV Google Sheets secara lokal; KPI 9 status; filter tanggal booking/SP3K/akad, proyek, tim dan status; pencarian debitur/sales/blok/ID; buka detail; cetak/simpan PDF melalui print Android; berbagi teks ke WhatsApp pribadi; kirim file manual ke Telegram Saved Messages via Android sharesheet; tombol membuka Termux; panduan gangguan koneksi.
+**Langkah:** (1) buka file `PKG_APP_DATA_API.gs` di Apps Script proyek *baru* (bukan PKG TERMUX ENGINE), (2) jalankan fungsi `PKG_APP_SETUP` dan simpan kode akses yang tampil di log, (3) Terapkan -> Aplikasi Web -> Eksekusi sebagai saya -> Akses siapa saja -> Salin URL /exec, (4) buka APK -> Pengaturan Koneksi -> tempel URL dan kode -> Simpan & Hubungkan.
 
-**Belum terhubung:** pembaruan realtime Google Sheets, monitoring/remote control proses Termux, start/stop otomatis, ganti nomor bot, sinkronisasi akun, backup terenkripsi Telegram. Fitur tersebut memerlukan penghubung lokal tambahan yang belum dibuat agar tidak merusak bot V6 yang sudah aktif. Jangan perlakukan UI offline ini sebagai tampilan langsung status bot/ERP.
+**PENTING:** jangan publikasikan kode akses; jangan gunakan BRIDGE_KEY bot. Akses Web App siapa saja diperlukan oleh APK yang tidak memakai akun Google, tetapi seluruh data pribadi hanya keluar setelah token khusus berhasil diverifikasi. Apps Script membaca tab `01 DATA TERPILIH` dari Sheet viewer, bukan ERP MASTER secara langsung.
 
-Data CSV diproses **di RAM**, tidak dikirim ke internet ataupun disimpan permanen oleh aplikasi. Import kembali ketika dibutuhkan. Ekspor CSV tidak ada dalam build awal.
+Aplikasi memperbarui data ketika dibuka dan setiap ~5 menit saat tampak di layar. Sumber Google Sheets sendiri diperbarui mengikuti jadwal sebelumnya; bukan realtime per detik.
 
-## Cara membangun
-GitHub Actions build di branch `pkg-control-center-android-offline-v1` → download artifact `PKG-Control-Center-Android-Offline-APK` → ekstrak APK → kirim ke Android → instal. APK debug bukan rilis Play Store.
+Aplikasi dapat membaca status, mencari, memfilter, mencetak PDF, berbagi WhatsApp manual, membuka Termux, dan mengirim file manual lewat Telegram. Kontrol langsung proses Termux, penggantian nomor bot dan arsip otomatis Telegram belum diaktifkan.
 
-## Format sumber
-Google Sheets `PKG TERMUX — DATA FIX & LAPORAN` → `01 DATA TERPILIH` → File → Download → CSV. Header minimal: `PROYEK`, `NAMA DEBITUR`, `STATUS`; header lainnya: `BLOK`, `SALES`, `TIM`, `JENIS PENJUALAN`, `TGL BOOKING`, `TGL SP3K`, `TGL AKAD`, `ID TRANSAKSI`.
+Tidak ada data debitur yang dipublikasikan melalui website. Data hanya tampil di aplikasi yang memegang kunci khusus. Apabila perangkat hilang, ganti `PKG_APP_TOKEN` melalui setup ulang yang aman (rotasi), dan hapus koneksi di perangkat lama.
 
-Tidak menyentuh Fonnte, ERP, atau WhatsApp Bot Termux.
+Ini APK debug dari GitHub Actions, bukan rilis Play Store.

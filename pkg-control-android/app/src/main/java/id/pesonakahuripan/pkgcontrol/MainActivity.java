@@ -56,6 +56,7 @@ public final class MainActivity extends Activity {
       }
     });
     web.addJavascriptInterface(new Bridge(),"PKG");
+    web.addJavascriptInterface(new PkgPrivateSync(this, web),"PKGSYNC");
     web.loadUrl("file:///android_asset/index.html");
   }
 
