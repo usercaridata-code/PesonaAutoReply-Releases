@@ -14,6 +14,9 @@
 const PKG_APP_ERP_SHEET = '1DS1W7vRSmE8AGfaG4Hz-2st9tWJ1ADKwP4z6ASAXj14';
 const PKG_APP_CONTROL = 'T22_CONTROL';
 const PKG_APP_PAGE_MAX = 700;
+// Android V1.1 requests 700, but can receive >700 rows and advances by rows.length.
+// Send up to 2000 rows per response to reduce 13 network trips to about 5.
+const PKG_APP_SEND_PAGE = 2000;
 const PKG_APP_COLUMNS = [
   'NO', 'PROYEK', 'NAMA DEBITUR', 'BLOK', 'SALES',
   'TIM', 'STATUS', 'JENIS PENJUALAN', 'TGL BOOKING',
@@ -139,11 +142,12 @@ function doPost(e) {
     const total=src.total;
     if(total>50000)
       return PKG_APP_JSON_({ok:false,error:'Dataset terlalu besar'});
+    const sendLimit=Math.min(PKG_APP_SEND_PAGE,total-offset);
     let skip=offset,rows=[];
-    for(let i=0;i<src.slots.length&&rows.length<limit;i++){
+    for(let i=0;i<src.slots.length&&rows.length<sendLimit;i++){
       const slot=src.slots[i];
       if(skip>=slot.count){skip-=slot.count;continue;}
-      const take=Math.min(limit-rows.length,slot.count-skip);
+      const take=Math.min(sendLimit-rows.length,slot.count-skip);
       const part=slot.sheet.getRange(skip+2,1,take,20).getDisplayValues();
       for(let j=0;j<part.length;j++){
         const r=part[j];
